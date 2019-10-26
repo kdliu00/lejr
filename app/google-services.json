@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "393521308553",
+    "firebase_url": "https://lejr-ab5f4.firebaseio.com",
+    "project_id": "lejr-ab5f4",
+    "storage_bucket": "lejr-ab5f4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:393521308553:android:e08470d800d7d7e1e4f758",
+        "android_client_info": {
+          "package_name": "com.tuth.lejr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "393521308553-8inn1km7kttgqto5mnfes6hcu55oqb73.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tuth.lejr",
+            "certificate_hash": "743c1ba24d4d81fab3992522fca366b10f587e7e"
+          }
+        },
+        {
+          "client_id": "393521308553-b0hgn0m7dge0jor6d64mghmdil8gi8go.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_q1FrM7g8ZVCfyqmaOcCs4XVqaQVSqJY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "393521308553-b0hgn0m7dge0jor6d64mghmdil8gi8go.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

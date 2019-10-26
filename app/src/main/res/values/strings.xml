@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Lejr</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="find_group">Find Group</string>
+    <string name="create_group">Create Group</string>
 </resources>
