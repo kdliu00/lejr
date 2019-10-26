@@ -1,6 +1,7 @@
 package com.tuth.lejr;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -37,7 +38,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
-        groupID = getPreferences(Context.MODE_PRIVATE).getString("groupID", null);
+        groupID = getIntent().getStringExtra("groupID");
+
         // TODO: handle null groupID
 
         db = FirebaseFirestore.getInstance();

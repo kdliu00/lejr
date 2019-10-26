@@ -5,11 +5,12 @@ android {
     buildToolsVersion "29.0.1"
     defaultConfig {
         applicationId "com.tuth.lejr"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -28,7 +29,6 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-ml-vision:24.0.0'
     implementation 'com.firebaseui:firebase-ui-auth:6.0.2'
-    implementation "com.firebaseui:firebase-ui-firestore:6.0.2"
     implementation 'com.google.firebase:firebase-auth:19.1.0'
     implementation 'com.google.firebase:firebase-firestore:21.2.0'
 

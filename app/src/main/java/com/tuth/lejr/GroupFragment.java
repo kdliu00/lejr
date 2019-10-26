@@ -98,6 +98,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Log.d(TAG, "Group successfully updated!");
+                    createUser(name, email);
                 }
             })
             .addOnFailureListener(new OnFailureListener() {
@@ -106,8 +107,6 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
                     Log.w(TAG, "Error updating group", e);
                 }
             });
-
-        createUser(name, email, groupID);
     }
 
     private void groupDoesNotExist(String _groupID) {
@@ -128,6 +127,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "Group added with ID: " + documentReference.getId());
                         groupID = documentReference.getId();
+                        createUser(name, email);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -136,15 +136,13 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
                         Log.w(TAG, "Error adding group", e);
                     }
                 });
-
-        createUser(name, email, groupID);
     }
 
-    private void createUser(String _name, String _email, String _groupID) {
+    private void createUser(String _name, String _email) {
         Map<String, Object> user = new HashMap<>();
         user.put("name", _name);
         user.put("email", _email);
-        user.put("group", _groupID);
+        user.put("group", groupID);
 
         db.collection("users").document(mUser.getUid())
                 .set(user)
@@ -152,6 +150,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "User successfully created!");
+                        signInActivity.returnFromGroupFragment(groupID);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -160,8 +159,6 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
                         Log.w(TAG, "Error creating user document", e);
                     }
                 });
-
-        signInActivity.returnFromGroupFragment(_groupID);
     }
 
     @Override

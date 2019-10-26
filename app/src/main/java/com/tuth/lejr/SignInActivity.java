@@ -39,17 +39,7 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
     private static FirebaseFirestore db;
     private GoogleSignInClient mGoogleSignInClient;
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        // User has already signed in
-        if (currentUser != null) {
-            assignGroup(currentUser.getUid());
-        }
-    }
-
+    private String groupID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +57,12 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         mAuth = FirebaseAuth.getInstance();
+
+        // Check if user is signed in (non-null)
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            assignGroup(currentUser.getUid());
+        }
     }
 
     @Override
@@ -87,13 +83,10 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
         }
     }
 
-    public void returnFromGroupFragment(String groupID) {
+    public void returnFromGroupFragment(String _groupID) {
         getSupportFragmentManager().popBackStack();
 
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("groupID", groupID);
-        editor.commit();
+        groupID = _groupID;
 
         goToMainActivity();
     }
@@ -129,6 +122,7 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d(TAG, "User exists, going to MainActivity");
+                        groupID = document.getString("group");
                         goToMainActivity();
                     } else {
                         Log.d(TAG, "User does not exist, going to GroupFragment");
@@ -143,12 +137,13 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
 
     private void goToGroupFragment() {
         getSupportFragmentManager().beginTransaction()
-                .add(new GroupFragment(this), "GroupFragment")
+                .add(R.id.group_view_frame, new GroupFragment(this))
                 .commit();
     }
 
     private void goToMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("groupID", groupID);
         startActivity(intent);
         finish();
     }
