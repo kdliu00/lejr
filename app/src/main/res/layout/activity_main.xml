@@ -31,6 +31,6 @@
         android:tint="#FFFFFF"
         app:backgroundTint="#009688"
         app:maxImageSize="@android:dimen/app_icon_size"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:srcCompat="@drawable/ic_add" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
