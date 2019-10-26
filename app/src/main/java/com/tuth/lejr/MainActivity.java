@@ -1,16 +1,28 @@
 package com.tuth.lejr;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private String groupID;
+    private static FirebaseFirestore db;
+    private Query query;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,14 +31,34 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        recyclerView = findViewById(R.id.entry_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(this);
+
+        groupID = getPreferences(Context.MODE_PRIVATE).getString("groupID", null);
+        // TODO: handle null groupID
+
+        db = FirebaseFirestore.getInstance();
+        updateQuery();
+    }
+
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+        if (i == R.id.fab) {
+            addEntry();
+        }
+    }
+
+    private void addEntry() {
+
+    }
+
+    private void updateQuery() {
+        CollectionReference colRef = db.collection("groups").document(groupID).collection("entries");
+        query = colRef.orderBy("date", Query.Direction.DESCENDING);
     }
 
 }

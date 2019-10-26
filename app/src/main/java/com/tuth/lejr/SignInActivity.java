@@ -1,6 +1,8 @@
 package com.tuth.lejr;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -23,21 +26,36 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SignInActivity extends FragmentActivity implements View.OnClickListener {
 
-    private static final String TAG = "GoogleActivity";
+    private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
 
     private FirebaseAuth mAuth;
-
+    private static FirebaseFirestore db;
     private GoogleSignInClient mGoogleSignInClient;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        // User has already signed in
+        if (currentUser != null) {
+            assignGroup(currentUser.getUid());
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        db = FirebaseFirestore.getInstance();
 
         findViewById(R.id.signInButton).setOnClickListener(this);
 
@@ -69,6 +87,17 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
         }
     }
 
+    public void returnFromGroupFragment(String groupID) {
+        getSupportFragmentManager().popBackStack();
+
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("groupID", groupID);
+        editor.commit();
+
+        goToMainActivity();
+    }
+
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
@@ -81,6 +110,7 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            assignGroup(user.getUid());
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -88,6 +118,39 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
                         }
                     }
                 });
+    }
+
+    private void assignGroup(String userID) {
+        DocumentReference userDocRef = db.collection("users").document(userID);
+        userDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "User exists, going to MainActivity");
+                        goToMainActivity();
+                    } else {
+                        Log.d(TAG, "User does not exist, going to GroupFragment");
+                        goToGroupFragment();
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+
+    private void goToGroupFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .add(new GroupFragment(this), "GroupFragment")
+                .commit();
+    }
+
+    private void goToMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void signIn() {

@@ -44,5 +44,5 @@
         app:layout_constraintBottom_toTopOf="@+id/find_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:importantForAutofill="no" />
+        android:autofillHints="" />
 </androidx.constraintlayout.widget.ConstraintLayout>
