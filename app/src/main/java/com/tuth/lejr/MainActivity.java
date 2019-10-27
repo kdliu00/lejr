@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .addToBackStack("group_details_fragment")
                 .commit();
         findViewById(R.id.fab).setVisibility(View.INVISIBLE);
+        findViewById(R.id.entry_recycler).setVisibility(View.INVISIBLE);
     }
 
     private void addEntry() {
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .addToBackStack("add_entry_fragment")
                 .commit();
         findViewById(R.id.fab).setVisibility(View.INVISIBLE);
+        findViewById(R.id.entry_recycler).setVisibility(View.INVISIBLE);
     }
 
     private void updateQuery() {
@@ -117,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void updateBalance() {
         TextView balanceText = findViewById(R.id.current_balance_text);
         String sign = balance < 0 ? "-" : "";
-        String balanceString = String.join("", sign, "$", String.valueOf(balance));
+        String balanceString = String.join("", sign, "$", String.valueOf(Math.abs(balance)));
         balanceText.setText(balanceString);
     }
 
@@ -157,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .addToBackStack("entry_fragment")
                         .commit();
                 findViewById(R.id.fab).setVisibility(View.INVISIBLE);
+                findViewById(R.id.entry_recycler).setVisibility(View.INVISIBLE);
             }
         });
 
@@ -185,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FloatingActionButton fab = findViewById(R.id.fab);
         if (fab.getVisibility() == View.INVISIBLE && stackCount == 1) {
             findViewById(R.id.fab).setVisibility(View.VISIBLE);
+            findViewById(R.id.entry_recycler).setVisibility(View.VISIBLE);
         }
     }
 }
