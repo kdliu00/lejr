@@ -132,8 +132,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (snapshot != null && snapshot.exists()) {
                     Log.d(TAG, "Current data: " + snapshot.getData());
-                    HashMap<String, Double> memberBalances = (HashMap<String, Double>) snapshot.get("members");
-                    balance = memberBalances.get(userID);
+                    HashMap<String, Number> memberBalances = (HashMap<String, Number>) snapshot.get("members");
+                    balance = memberBalances.get(userID).doubleValue();
                     updateBalance();
                 } else {
                     Log.d(TAG, "Current data: null");

@@ -8,15 +8,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ShareHolder> {
 
-    private Map.Entry[] mDataset;
+    private List<Map.Entry<String, Object>> mDataset;
     private Entry entry;
 
     public ShareAdapter(Entry _entry) {
-        mDataset = (Map.Entry[]) _entry.getShares().entrySet().toArray();
+        mDataset = new ArrayList<>();
+        for (Map.Entry<String, Object> e : _entry.getShares().entrySet()) {
+            mDataset.add(e);
+        }
         entry = _entry;
     }
 
@@ -29,13 +34,13 @@ public class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ShareHolder>
 
     @Override
     public void onBindViewHolder(@NonNull ShareHolder holder, int position) {
-        holder.shareViewAmount.setText(String.valueOf(mDataset[position].getValue()));
-        holder.shareViewTitle.setText(Entry.userMap.get(mDataset[position].getKey()));
+        holder.shareViewAmount.setText(String.valueOf(mDataset.get(position).getValue()));
+        holder.shareViewTitle.setText(Entry.userMap.get(mDataset.get(position).getKey()));
     }
 
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return mDataset.size();
     }
 
     class ShareHolder extends RecyclerView.ViewHolder {
