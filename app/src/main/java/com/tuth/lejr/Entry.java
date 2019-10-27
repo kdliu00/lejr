@@ -20,7 +20,7 @@ public class Entry {
 
     }
 
-    public Entry(String _description, String _imagePath, String _payer, String _entryID,
+    public Entry(String _description, String _imagePath, String _payer,
                  Date _date, HashMap<String, Object> _shares, Double _amount) {
         description = _description;
         imagePath = _imagePath;

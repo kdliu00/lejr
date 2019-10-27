@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private String TAG = "MainActivity";
 
-    private String groupID;
+    public  String groupID;
     private static FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Query query;
     private RecyclerView recyclerView;
