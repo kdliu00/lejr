@@ -78,7 +78,7 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
             }
         }
 
-        if (requestCode == 0) {
+        if (requestCode == 379) {
             if (resultCode == RESULT_OK) {
                 groupID = data.getStringExtra("SCAN_RESULT");
                 groupFragment.setGroupID(groupID);
