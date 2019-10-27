@@ -19,6 +19,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -94,8 +96,11 @@ public class CreateEntryFragment extends Fragment implements View.OnClickListene
             data.put("imagePath", downloadUri.toString());
             data.put("payer", payerID);
 
-            HashMap<String, Object> paymentData = new HashMap<>();
-            paymentData.put(payerID, receiptAmount);
+            final HashMap<String, Double> paymentData = new HashMap<>();
+            int numShares = Entry.userMap.size();
+            for (String uid : Entry.userMap.keySet()) {
+                paymentData.put(uid, receiptAmount / numShares);
+            }
 
             data.put("shares", paymentData);
 
@@ -107,7 +112,32 @@ public class CreateEntryFragment extends Fragment implements View.OnClickListene
 
             Log.d(TAG, "Submitted data");
 
-
+            // Update balances?
+            final DocumentReference docRef = FirebaseFirestore.getInstance()
+                    .collection("groups")
+                    .document(((MainActivity)getActivity()).groupID);
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        HashMap<String, Number> balanceMap = (HashMap<String, Number>) document.get("members");
+                        if (document.exists() && balanceMap != null) {
+                            Log.d(TAG, "Updating balances");
+                            for (String uid : paymentData.keySet()) {
+                                balanceMap.put(uid, balanceMap.getOrDefault(uid, 0.0).doubleValue() - paymentData.get(uid));
+                            }
+                            balanceMap.put(payerID, balanceMap.getOrDefault(payerID, 0.0).doubleValue() + receiptAmount);
+                            // Resubmit balances
+                            docRef.update("members", balanceMap);
+                        } else {
+                            Log.d(TAG, "Failed");
+                        }
+                    } else {
+                        Log.d(TAG, "Failed", task.getException());
+                    }
+                }
+            });
         }
     }
 }
