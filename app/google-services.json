@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "393521308553-1rf3ibjhka5016q2am15n8i3eqln2dnf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tuth.lejr",
+            "certificate_hash": "f95b657797f5e7fe90fce6602ad9ff24c7211660"
+          }
+        },
+        {
           "client_id": "393521308553-8inn1km7kttgqto5mnfes6hcu55oqb73.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
