@@ -1,16 +1,11 @@
 package com.tuth.lejr;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -46,7 +41,7 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        findViewById(R.id.signInButton).setOnClickListener(this);
+        findViewById(R.id.google_sign_in).setOnClickListener(this);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -60,6 +55,7 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
         // Check if user is signed in (non-null)
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
+            signInVisibility(View.INVISIBLE);
             assignGroup(currentUser.getUid());
         }
     }
@@ -112,6 +108,10 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
                 });
     }
 
+    public void signInVisibility(int visibility) {
+        findViewById(R.id.google_sign_in).setVisibility(visibility);
+    }
+
     private void assignGroup(String userID) {
         DocumentReference userDocRef = db.collection("users").document(userID);
         userDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -129,6 +129,7 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
                     }
                 } else {
                     Log.d(TAG, "assign group failed", task.getException());
+                    signInVisibility(View.VISIBLE);
                 }
             }
         });
@@ -169,7 +170,7 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.signInButton) {
+        if (i == R.id.google_sign_in) {
             signIn();
         }
     }

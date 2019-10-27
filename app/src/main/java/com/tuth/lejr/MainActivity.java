@@ -6,13 +6,17 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.HashMap;
 
@@ -33,6 +38,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerView recyclerView;
     private EntryAdapter entryAdapter;
 
+    private Double balance = 0.0;
+    private String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,13 +48,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        updateBalance();
+
         groupID = getIntent().getStringExtra("groupID");
         updateQuery();
 
         getUserMap();
 
+        setUpBalanceListener();
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(this);
+
+        findViewById(R.id.view_group_details).setOnClickListener(this);
     }
 
     @Override
@@ -54,7 +68,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int i = v.getId();
         if (i == R.id.fab) {
             addEntry();
+        } else if (i == R.id.view_group_details) {
+            viewGroupDetails();
         }
+    }
+
+    private void viewGroupDetails() {
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.group_view_frame, new GroupDetailsFragment(groupID))
+                .commit();
+        findViewById(R.id.fab).setVisibility(View.INVISIBLE);
     }
 
     private void addEntry() {
@@ -86,6 +109,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 } else {
                     Log.d(TAG, "getUserMap failed", task.getException());
+                }
+            }
+        });
+    }
+
+    private void updateBalance() {
+        TextView balanceText = findViewById(R.id.current_balance_text);
+        String sign = balance < 0 ? "-" : "";
+        String balanceString = String.join("", sign, "$", String.valueOf(balance));
+        balanceText.setText(balanceString);
+    }
+
+    private void setUpBalanceListener() {
+        final DocumentReference docRef = db.collection("groups").document(groupID);
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d(TAG, "Current data: " + snapshot.getData());
+                    HashMap<String, Double> memberBalances = (HashMap<String, Double>) snapshot.get("members");
+                    balance = memberBalances.get(userID);
+                    updateBalance();
+                } else {
+                    Log.d(TAG, "Current data: null");
                 }
             }
         });
@@ -124,11 +177,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int stackCount = getSupportFragmentManager().getBackStackEntryCount();
         if (stackCount > 0) {
             getSupportFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
         }
         FloatingActionButton fab = findViewById(R.id.fab);
         if (fab.getVisibility() == View.INVISIBLE && stackCount == 0) {
             findViewById(R.id.fab).setVisibility(View.VISIBLE);
         }
-        super.onBackPressed();
     }
 }

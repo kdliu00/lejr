@@ -8,4 +8,7 @@
     <string name="name_amount">Name - Amount</string>
     <string name="_10_24_2019">10/24/2019</string>
     <string name="description">Description</string>
+    <string name="group_details">Group Details</string>
+    <string name="current_balance_16_32">Current Balance:</string>
+    <string name="_433_25">-$433.25</string>
 </resources>

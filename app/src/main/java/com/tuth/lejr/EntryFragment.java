@@ -42,6 +42,7 @@ public class EntryFragment extends Fragment {
         imageView = view.findViewById(R.id.entry_image_view);
         title = view.findViewById(R.id.entry_title_view);
         description = view.findViewById(R.id.entry_description_view);
+        date = view.findViewById(R.id.entry_date_view);
 
         StorageReference gsReference = storage.getReferenceFromUrl(entry.getImagePath());
 

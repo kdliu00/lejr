@@ -1,7 +1,5 @@
 package com.tuth.lejr;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;

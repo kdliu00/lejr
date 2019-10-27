@@ -59,6 +59,8 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
         view.findViewById(R.id.create_group).setOnClickListener(this);
         mEdit = view.findViewById(R.id.group_id_field);
 
+        signInActivity.signInVisibility(View.INVISIBLE);
+
         return view;
     }
 
