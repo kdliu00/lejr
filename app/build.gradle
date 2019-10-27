@@ -29,6 +29,7 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-ml-vision:24.0.0'
     implementation 'com.firebaseui:firebase-ui-auth:6.0.2'
+    implementation 'com.firebaseui:firebase-ui-firestore:6.0.2'
     implementation 'com.google.firebase:firebase-auth:19.1.0'
     implementation 'com.google.firebase:firebase-firestore:21.2.0'
 
