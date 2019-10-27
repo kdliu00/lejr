@@ -4,6 +4,7 @@ import androidx.core.content.FileProvider;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -29,6 +30,8 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AddEntryFragment extends Fragment implements View.OnClickListener {
     static final String TAG = "AddEntry";
@@ -120,12 +123,62 @@ public class AddEntryFragment extends Fragment implements View.OnClickListener {
                 .getOnDeviceTextRecognizer();
 
         Task<FirebaseVisionText> result = detector.processImage(fvImage)
-                .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
-                    @Override
-                    public void onSuccess(FirebaseVisionText fvText) {
-                        String resultText = fvText.getText();
-                        Log.d(TAG, resultText);
+                .addOnSuccessListener(new GetReceiptInfo());
+    }
+
+    private class GetReceiptInfo implements OnSuccessListener<FirebaseVisionText> {
+        private Pattern pAmount = Pattern.compile("\\d+\\.\\d\\d");
+
+        @Override
+        public void onSuccess(FirebaseVisionText fvText) {
+            // Look for TOTAL
+            Rect location = null;
+            for (FirebaseVisionText.TextBlock block : fvText.getTextBlocks()) {
+                String blockText = block.getText();
+                if (blockText.contains("TOTAL")) {
+                    Log.d(TAG, "Block match =\n" + blockText);
+                    for (FirebaseVisionText.Line line : block.getLines()) {
+                        String lineText = line.getText();
+                        if (lineText.contains("TOTAL") && !lineText.contains("SUBTOTAL")) {
+                            Log.d(TAG, "Line match =\n" + lineText);
+                            location = line.getBoundingBox();
+                        }
                     }
-                });
+                }
+            }
+            if (location == null) {
+                return;
+            }
+            // Calculate look parameters
+            int lineHeight = location.height();
+            int minY = location.top - 2 * lineHeight;
+            int maxY = location.bottom + 2 * lineHeight;
+            // Look for amount
+            double amount = 0;
+            for (FirebaseVisionText.TextBlock block : fvText.getTextBlocks()) {
+                Rect box = block.getBoundingBox();
+                if (box.bottom > minY && box.top < maxY) {
+                    Log.d(TAG, "Found block match =\n" + block.getText());
+                    for (FirebaseVisionText.Line line : block.getLines()) {
+                        box = line.getBoundingBox();
+                        if (box.bottom > minY && box.top < maxY) {
+                            String lineText = line.getText();
+                            Matcher matches = pAmount.matcher(lineText);
+                            while (matches.find()) {
+                                String match = lineText.substring(matches.start(), matches.end());
+                                Log.d(TAG, "Possible amount = " + match);
+                                double currentAmount = Double.parseDouble(match);
+                                if (currentAmount > amount) {
+                                    amount = currentAmount;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // Use amount
+            Log.d(TAG, "Final amount = " + amount);
+            // TODO: Use amount
+        }
     }
 }
