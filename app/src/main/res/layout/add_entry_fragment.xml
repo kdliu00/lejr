@@ -7,28 +7,37 @@
     android:layout_height="match_parent"
     tools:context=".AddEntryFragment">
 
+    <ImageView
+        android:id="@+id/background_frame_add_entry"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@android:color/background_light"
+        tools:layout_editor_absoluteX="411dp"
+        tools:layout_editor_absoluteY="731dp" />
+
     <ImageButton
         android:id="@+id/from_camera"
         style="@style/Widget.AppCompat.ImageButton"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_marginBottom="68dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="36dp"
+        android:backgroundTint="#009688"
         android:scaleType="fitStart"
         android:src="@android:drawable/ic_menu_camera"
-        android:tint="#009688"
+        android:tint="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/from_gallery"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/from_gallery"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:backgroundTint="#009688"
         android:scaleType="fitStart"
         android:src="@android:drawable/ic_menu_gallery"
-        android:tint="#009688"
+        android:tint="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/from_camera"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -37,12 +46,38 @@
 
     <ImageView
         android:id="@+id/captured_image"
-        android:layout_width="300dp"
-        android:layout_height="400dp"
+        android:layout_width="264dp"
+        android:layout_height="366dp"
         android:layout_marginTop="48dp"
         android:src="@android:color/background_dark"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/background_frame_add_entry" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/confirm_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="164dp"
+        android:clickable="true"
+        android:src="@drawable/ic_confirm"
+        app:borderWidth="0.5dp"
+        app:fabSize="auto"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/captured_image"
+        app:layout_constraintStart_toEndOf="@+id/captured_image"
+        app:maxImageSize="@android:dimen/app_icon_size" />
+
+    <EditText
+        android:id="@+id/receipt_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        app:layout_constraintBottom_toTopOf="@+id/confirm_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/captured_image" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

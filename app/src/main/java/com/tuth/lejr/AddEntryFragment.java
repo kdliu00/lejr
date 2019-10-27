@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.provider.MediaStore;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,34 +40,33 @@ public class AddEntryFragment extends Fragment implements View.OnClickListener {
     static final int FROM_GALLERY = 1;
     static final int FROM_CAMERA = 2;
 
-    private Activity myActivity;
-    private View myView;
+    private View view;
     private File cameraFile;
-
-    public AddEntryFragment(Activity a) {
-        myActivity = a;
-    }
+    private double receiptAmount;
+    private Uri receiptUri;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "Created.");
-        myView = inflater.inflate(R.layout.add_entry_fragment, container, false);
-        myView.findViewById(R.id.from_camera).setOnClickListener(this);
-        myView.findViewById(R.id.from_gallery).setOnClickListener(this);
-        return myView;
+        view = inflater.inflate(R.layout.add_entry_fragment, container, false);
+        view.findViewById(R.id.from_camera).setOnClickListener(this);
+        view.findViewById(R.id.from_gallery).setOnClickListener(this);
+        view.findViewById(R.id.confirm_image).setOnClickListener(this);
+        view.findViewById(R.id.confirm_image).setVisibility(View.INVISIBLE);
+        return view;
     }
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.from_gallery) {
-            Log.d(TAG, "Selecting from gallery.");
+            Log.d(TAG, "Selecting from gallery");
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
             intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[] {"image/jpeg", "image/png"});
             startActivityForResult(intent, FROM_GALLERY);
         } else if (view.getId() == R.id.from_camera) {
-            Log.d(TAG, "Selecting from camera.");
+            Log.d(TAG, "Selecting from camera");
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (intent.resolveActivity(getContext().getPackageManager()) != null) {
                 try {
@@ -86,6 +86,11 @@ public class AddEntryFragment extends Fragment implements View.OnClickListener {
             } else {
                 Log.d(TAG, "Failed.");
             }
+        } else if (view.getId() == R.id.confirm_image) {
+            Log.d(TAG, "Creating options frame");
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .add(R.id.add_entry_frame, new CreateEntryFragment(receiptAmount, receiptUri))
+                    .commit();
         }
     }
 
@@ -95,26 +100,45 @@ public class AddEntryFragment extends Fragment implements View.OnClickListener {
         if (resultCode == Activity.RESULT_OK) {
             Uri imageUri = null;
             if (requestCode == FROM_GALLERY) {
-                Log.d(TAG, "Received gallery response.");
+                Log.d(TAG, "Received gallery response");
                 imageUri = data.getData();
             } else if (requestCode == FROM_CAMERA) {
-                Log.d(TAG, "Received camera response.");
+                Log.d(TAG, "Received camera response");
                 if (cameraFile != null) {
                     imageUri = Uri.fromFile(cameraFile);
                 }
             }
             if (imageUri != null) {
-                ImageView iv = myView.findViewById(R.id.captured_image);
-                iv.setImageURI(imageUri);
-                grabText(imageUri);
+                receiptUri = imageUri;
+                grabText();
             }
         }
     }
 
-    private void grabText(Uri imageUri) {
+    private void updateImage() {
+        ImageView iv = view.findViewById(R.id.captured_image);
+        if (receiptUri != null) {
+            iv.setImageURI(receiptUri);
+        } else {
+            iv.setImageURI(null);
+        }
+    }
+
+    private void updateAmount() {
+        EditText et = view.findViewById(R.id.receipt_amount);
+        if (receiptAmount > 0) {
+            et.setText("" + receiptAmount);
+            view.findViewById(R.id.confirm_image).setVisibility(View.VISIBLE);
+        } else {
+            et.setText("");
+            view.findViewById(R.id.confirm_image).setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void grabText() {
         FirebaseVisionImage fvImage;
         try {
-            fvImage = FirebaseVisionImage.fromFilePath(getContext(), imageUri);
+            fvImage = FirebaseVisionImage.fromFilePath(getContext(), receiptUri);
         } catch (IOException err) {
             err.printStackTrace();
             return;
@@ -131,6 +155,7 @@ public class AddEntryFragment extends Fragment implements View.OnClickListener {
 
         @Override
         public void onSuccess(FirebaseVisionText fvText) {
+            updateImage();
             // Look for TOTAL
             Rect location = null;
             for (FirebaseVisionText.TextBlock block : fvText.getTextBlocks()) {
@@ -178,7 +203,10 @@ public class AddEntryFragment extends Fragment implements View.OnClickListener {
             }
             // Use amount
             Log.d(TAG, "Final amount = " + amount);
-            // TODO: Use amount
+            if (amount != 0) {
+                receiptAmount = amount;
+                updateAmount();
+            }
         }
     }
 }

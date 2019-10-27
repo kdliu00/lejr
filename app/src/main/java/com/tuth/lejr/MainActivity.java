@@ -59,8 +59,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void addEntry() {
         getSupportFragmentManager().beginTransaction()
-            .add(R.id.add_entry_frame, new AddEntryFragment(this))
-            .commit();
+                .add(R.id.add_entry_frame, new AddEntryFragment())
+                .commit();
+        findViewById(R.id.fab).setVisibility(View.INVISIBLE);
     }
 
     private void updateQuery() {
