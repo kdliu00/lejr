@@ -42,6 +42,8 @@ public class AddEntryFragment extends Fragment implements View.OnClickListener {
 
     private View view;
     private File cameraFile;
+
+    private String receiptTitle;
     private double receiptAmount;
     private Uri receiptUri;
 
@@ -89,7 +91,7 @@ public class AddEntryFragment extends Fragment implements View.OnClickListener {
         } else if (view.getId() == R.id.confirm_image) {
             Log.d(TAG, "Creating options frame");
             getActivity().getSupportFragmentManager().beginTransaction()
-                    .add(R.id.add_entry_frame, new CreateEntryFragment(receiptAmount, receiptUri))
+                    .add(R.id.add_entry_frame, new CreateEntryFragment(receiptAmount, receiptUri, receiptTitle))
                     .commit();
         }
     }
@@ -206,6 +208,9 @@ public class AddEntryFragment extends Fragment implements View.OnClickListener {
             if (amount != 0) {
                 receiptAmount = amount;
                 updateAmount();
+                // Set temporary description
+                final int numChars = 16;
+                receiptTitle = fvText.getText().substring(0, numChars) + "...";
             }
         }
     }
