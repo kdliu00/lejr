@@ -63,24 +63,11 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
-    private void findGroup() {
-        try {
-
-            Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-            intent.putExtra("SCAN_MODE", "QR_CODE_MODE"); // "PRODUCT_MODE for bar codes
-
-            startActivityForResult(intent, 0);
-
-        } catch (Exception e) {
-
-            Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
-            Intent marketIntent = new Intent(Intent.ACTION_VIEW,marketUri);
-            startActivity(marketIntent);
-
-        }
+    public void setGroupID(String id) {
+        groupID = id;
     }
 
-    private void lookForGroup() {
+    public void lookForGroup() {
         DocumentReference docRef = db.collection("groups").document(groupID);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -99,6 +86,18 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
                 }
             }
         });
+    }
+
+    private void findGroup() {
+        try {
+            Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+            intent.putExtra("SCAN_MODE", "QR_CODE_MODE"); // PRODUCT_MODE for bar codes
+            startActivityForResult(intent, 0);
+        } catch (Exception e) {
+            Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
+            Intent marketIntent = new Intent(Intent.ACTION_VIEW,marketUri);
+            startActivity(marketIntent);
+        }
     }
 
     private void updateGroup(Object _members, Object _userMap) {

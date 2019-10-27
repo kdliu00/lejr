@@ -35,6 +35,7 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
     private GoogleSignInClient mGoogleSignInClient;
 
     private String groupID;
+    private GroupFragment groupFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,17 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
+            }
+        }
+
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+                groupID = data.getStringExtra("SCAN_RESULT");
+                groupFragment.setGroupID(groupID);
+                groupFragment.lookForGroup();
+            }
+            if(resultCode == RESULT_CANCELED){
+                Log.d(TAG, "qr scan canceled");
             }
         }
     }
@@ -136,8 +148,9 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
     }
 
     private void goToGroupFragment() {
+        groupFragment = new GroupFragment(this);
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_frame, new GroupFragment(this))
+                .add(R.id.fragment_frame, groupFragment)
                 .addToBackStack("group_fragment")
                 .commit();
     }
