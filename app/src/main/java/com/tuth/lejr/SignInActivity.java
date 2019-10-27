@@ -128,7 +128,7 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
                         goToGroupFragment();
                     }
                 } else {
-                    Log.d(TAG, "get failed with ", task.getException());
+                    Log.d(TAG, "assign group failed", task.getException());
                 }
             }
         });

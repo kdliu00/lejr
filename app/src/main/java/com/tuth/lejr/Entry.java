@@ -6,7 +6,9 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class Entry {
-    private String description, imagePath, payer, entryID;
+    public static HashMap<String, String> userMap;
+
+    private String description, imagePath, payer;
 
     private Date date;
 
@@ -25,7 +27,6 @@ public class Entry {
         description = _description;
         imagePath = _imagePath;
         payer = _payer;
-        entryID = _entryID;
 
         date = _date;
         shares = _shares;
@@ -45,8 +46,8 @@ public class Entry {
         return payer;
     }
 
-    public String getEntryID() {
-        return entryID;
+    public String getPayerName() {
+        return userMap.get(payer);
     }
 
     public Date getDate() {
@@ -63,7 +64,7 @@ public class Entry {
 
     public String getTitle() {
         String amountString = String.join("", "$", String.valueOf(getAmount()));
-        return String.join(" - ", getPayer(), amountString);
+        return String.join(" - ", getPayerName(), amountString);
     }
 
 }

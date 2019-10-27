@@ -73,7 +73,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d(TAG, "Group exists!");
-                        updateGroup(document.get("members"));
+                        updateGroup(document.get("members"), document.get("userMap"));
                     } else {
                         Log.d(TAG, "No such group");
                         groupDoesNotExist(groupID);
@@ -85,13 +85,35 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void updateGroup(Object _members) {
-        HashMap<String, Object> members = (HashMap) _members;
+    private void updateGroup(Object _members, Object _userMap) {
+        HashMap<String, Object> members = (HashMap<String, Object>) _members;
         members.put(mUser.getUid(), 0f);
+
+        final HashMap<String, String> userMap = (HashMap<String, String>) _userMap;
+        userMap.put(mUser.getUid(), mUser.getDisplayName());
 
         DocumentReference docRef = db.collection("groups").document(groupID);
         docRef
             .update("members", members)
+            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d(TAG, "Group successfully updated!");
+                    updateUserMap(userMap);
+                }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w(TAG, "Error updating group", e);
+                }
+            });
+    }
+
+    private void updateUserMap(HashMap<String, String> userMap) {
+        DocumentReference docRef = db.collection("groups").document(groupID);
+        docRef
+            .update("userMap", userMap)
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -117,13 +139,16 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
         Map<String, Object> members = new HashMap<>();
         members.put(mUser.getUid(), 0f);
         group.put("members", members);
+        Map<String, String> userMap = new HashMap<>();
+        userMap.put(mUser.getUid(), mUser.getDisplayName());
+        group.put("userMap", userMap);
 
         db.collection("groups")
                 .add(group)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "Group added with ID: " + documentReference.getId());
+                        Log.d(TAG, "Group created with ID: " + documentReference.getId());
                         groupID = documentReference.getId();
                         createUser(name, email);
                     }
