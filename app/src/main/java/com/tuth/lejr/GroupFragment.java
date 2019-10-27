@@ -33,7 +33,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
 
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
-    private static FirebaseFirestore db;
+    private static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private EditText mEdit;
 
@@ -47,8 +47,6 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
 
         email = mUser.getEmail();
         name = mUser.getDisplayName();
-
-        db = FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -110,7 +108,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
     }
 
     private void groupDoesNotExist(String _groupID) {
-        Toast toast = Toast.makeText(getContext(), _groupID, Toast.LENGTH_LONG);
+        Toast toast = Toast.makeText(getContext(), String.join(" ", "Group", _groupID, "does not exist!"), Toast.LENGTH_LONG);
         toast.show();
     }
 

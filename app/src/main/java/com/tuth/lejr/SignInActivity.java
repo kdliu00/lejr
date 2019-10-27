@@ -36,7 +36,7 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
     private static final int RC_SIGN_IN = 9001;
 
     private FirebaseAuth mAuth;
-    private static FirebaseFirestore db;
+    private static FirebaseFirestore db = FirebaseFirestore.getInstance();
     private GoogleSignInClient mGoogleSignInClient;
 
     private String groupID;
@@ -45,7 +45,6 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-        db = FirebaseFirestore.getInstance();
 
         findViewById(R.id.signInButton).setOnClickListener(this);
 

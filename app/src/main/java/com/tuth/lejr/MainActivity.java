@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
@@ -21,9 +22,10 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private String groupID;
-    private static FirebaseFirestore db;
+    private static FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Query query;
     private RecyclerView recyclerView;
+    private EntryAdapter entryAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,18 +34,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        recyclerView = findViewById(R.id.entry_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        groupID = getIntent().getStringExtra("groupID");
+        updateQuery();
+
+        setUpRecyclerView();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(this);
-
-        groupID = getIntent().getStringExtra("groupID");
-
-        // TODO: handle null groupID
-
-        db = FirebaseFirestore.getInstance();
-        updateQuery();
     }
 
     @Override
@@ -63,4 +60,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         query = colRef.orderBy("date", Query.Direction.DESCENDING);
     }
 
+    private void setUpRecyclerView() {
+        FirestoreRecyclerOptions<Entry> options = new FirestoreRecyclerOptions.Builder<Entry>()
+                .setQuery(query, Entry.class)
+                .build();
+
+        entryAdapter = new EntryAdapter(options);
+
+        recyclerView = findViewById(R.id.entry_recycler);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(entryAdapter);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        entryAdapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        entryAdapter.stopListening();
+    }
 }
