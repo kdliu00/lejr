@@ -76,15 +76,13 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
             }
-        }
-
-        if (requestCode == 379) {
+        } else {
             if (resultCode == RESULT_OK) {
                 groupID = data.getStringExtra("SCAN_RESULT");
+                Log.d(TAG, "Found QR code");
                 groupFragment.setGroupID(groupID);
                 groupFragment.lookForGroup();
-            }
-            if(resultCode == RESULT_CANCELED){
+            } else {
                 Log.d(TAG, "qr scan canceled");
             }
         }

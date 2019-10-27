@@ -21,14 +21,17 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -44,6 +47,7 @@ public class CreateEntryFragment extends Fragment implements View.OnClickListene
     static final String TAG = "CreateEntry";
 
     private View view;
+    private String groupID;
 
     private Date paymentDate;
     private String payerID;
@@ -147,7 +151,7 @@ public class CreateEntryFragment extends Fragment implements View.OnClickListene
 
             FirebaseFirestore.getInstance()
                     .collection("groups")
-                    .document(((MainActivity)getActivity()).groupID)
+                    .document(groupID)
                     .collection("entries")
                     .document().set(data);
 
@@ -156,7 +160,7 @@ public class CreateEntryFragment extends Fragment implements View.OnClickListene
             // Update balances?
             final DocumentReference docRef = FirebaseFirestore.getInstance()
                     .collection("groups")
-                    .document(((MainActivity)getActivity()).groupID);
+                    .document(groupID);
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -180,5 +184,49 @@ public class CreateEntryFragment extends Fragment implements View.OnClickListene
                 }
             });
         }
+    }
+
+    private void setUpRecyclerView() {
+        FirebaseFirestore.getInstance()
+                .collection("groups")
+                .document(groupID)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    HashMap<String, Object> balanceMap = (HashMap<String, Object>) document.get("members");
+                    if (document.exists() && balanceMap != null) {
+                        Log.d(TAG, "Updating balances");
+
+                    } else {
+                        Log.d(TAG, "Failed");
+                    }
+                } else {
+                    Log.d(TAG, "Failed", task.getException());
+                }
+            }
+        });
+//        Query query = colRef.orderBy("date", Query.Direction.DESCENDING);
+//
+//        FirestoreRecyclerOptions<Entry> options = new FirestoreRecyclerOptions.Builder<Entry>()
+//                .setQuery(query, Entry.class)
+//                .build();
+//
+//        entryAdapter = new EntryAdapter(options, new EntryAdapter.OnEntryItemClickListener() {
+//            @Override
+//            public void onEntryItemClick(Entry entryItem) {
+//                getSupportFragmentManager().beginTransaction()
+//                        .add(R.id.add_entry_frame, new EntryFragment(entryItem))
+//                        .commit();
+//                findViewById(R.id.fab).setVisibility(View.INVISIBLE);
+//            }
+//        });
+//
+//        RecyclerView rv = view.findViewById(R.id.entry_recycler);
+//        rv.setLayoutManager(new LinearLayoutManager(getContext()));
+//        rv.setAdapter(entryAdapter);
+//
+//        entryAdapter.startListening();
     }
 }

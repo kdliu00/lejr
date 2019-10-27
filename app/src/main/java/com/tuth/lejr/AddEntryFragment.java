@@ -47,6 +47,12 @@ public class AddEntryFragment extends Fragment implements View.OnClickListener {
     private double receiptAmount;
     private Uri receiptUri;
 
+    public String groupID;
+
+    public AddEntryFragment(String gid) {
+        groupID = gid;
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -91,7 +97,7 @@ public class AddEntryFragment extends Fragment implements View.OnClickListener {
         } else if (view.getId() == R.id.confirm_image) {
             Log.d(TAG, "Creating options frame");
             getActivity().getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_frame, new CreateEntryFragment(receiptAmount, receiptUri, receiptTitle))
+                    .add(R.id.fragment_frame, new CreateEntryFragment(groupID, receiptAmount, receiptUri, receiptTitle))
                     .addToBackStack("create_entry_fragment")
                     .commit();
         }
@@ -210,8 +216,7 @@ public class AddEntryFragment extends Fragment implements View.OnClickListener {
                 receiptAmount = amount;
                 updateAmount();
                 // Set temporary description
-                final int numChars = 16;
-                receiptTitle = fvText.getText().substring(0, numChars) + "...";
+                receiptTitle = fvText.getTextBlocks().get(0).getLines().get(0).getText();
             }
         }
     }
