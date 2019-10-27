@@ -12,29 +12,27 @@
         style="@style/Widget.AppCompat.ImageButton"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_marginStart="32dp"
         android:layout_marginBottom="36dp"
         android:backgroundTint="#009688"
         android:scaleType="fitStart"
         android:src="@android:drawable/ic_menu_camera"
         android:tint="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/from_gallery"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/from_gallery"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
         android:backgroundTint="#009688"
         android:scaleType="fitStart"
         android:src="@android:drawable/ic_menu_gallery"
         android:tint="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/from_camera"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/from_camera"
-        app:layout_constraintTop_toTopOf="@+id/from_camera" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
         android:id="@+id/captured_image"

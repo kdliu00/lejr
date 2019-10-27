@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void viewGroupDetails() {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_frame, new GroupDetailsFragment(groupID))
+                .addToBackStack("group_details_fragment")
                 .commit();
         findViewById(R.id.fab).setVisibility(View.INVISIBLE);
     }
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void addEntry() {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_frame, new AddEntryFragment())
+                .addToBackStack("add_entry_fragment")
                 .commit();
         findViewById(R.id.fab).setVisibility(View.INVISIBLE);
     }
@@ -152,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onEntryItemClick(Entry entryItem) {
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.fragment_frame, new EntryFragment(entryItem))
+                        .addToBackStack("entry_fragment")
                         .commit();
                 findViewById(R.id.fab).setVisibility(View.INVISIBLE);
             }
@@ -173,13 +176,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         int stackCount = getSupportFragmentManager().getBackStackEntryCount();
-//        if (stackCount > 0) {
-//            getSupportFragmentManager().popBackStack();
-//        } else {
-//            super.onBackPressed();
-//        }
+        if (stackCount > 0) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+        stackCount = getSupportFragmentManager().getBackStackEntryCount();
         FloatingActionButton fab = findViewById(R.id.fab);
-        if (fab.getVisibility() == View.INVISIBLE && stackCount == 0) {
+        if (fab.getVisibility() == View.INVISIBLE && stackCount == 1) {
             findViewById(R.id.fab).setVisibility(View.VISIBLE);
         }
     }

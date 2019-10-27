@@ -7,23 +7,9 @@
     android:layout_height="match_parent"
     android:id="@+id/linearLayout">
 
-    <EditText
-        android:id="@+id/group_id_field"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:ems="10"
-        android:gravity="center"
-        android:importantForAutofill="no"
-        android:inputType="textPersonName"
-        android:text="@string/group_id"
-        app:layout_constraintBottom_toTopOf="@+id/find_group"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <Button
         android:id="@+id/create_group"
-        android:layout_width="184dp"
+        android:layout_width="128dp"
         android:layout_height="52dp"
         android:layout_marginBottom="52dp"
         android:text="@string/create_group"
@@ -34,7 +20,7 @@
 
     <Button
         android:id="@+id/find_group"
-        android:layout_width="128dp"
+        android:layout_width="184dp"
         android:layout_height="52dp"
         android:layout_marginBottom="52dp"
         android:text="@string/find_group"

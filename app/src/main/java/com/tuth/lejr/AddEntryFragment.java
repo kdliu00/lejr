@@ -92,6 +92,7 @@ public class AddEntryFragment extends Fragment implements View.OnClickListener {
             Log.d(TAG, "Creating options frame");
             getActivity().getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_frame, new CreateEntryFragment(receiptAmount, receiptUri, receiptTitle))
+                    .addToBackStack("create_entry_fragment")
                     .commit();
         }
     }

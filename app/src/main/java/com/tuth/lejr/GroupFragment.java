@@ -1,5 +1,7 @@
 package com.tuth.lejr;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,8 +37,6 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
     private FirebaseUser mUser;
     private static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private EditText mEdit;
-
     private String TAG = "GroupFragment";
 
     public GroupFragment(SignInActivity _signInActivity) {
@@ -57,7 +57,6 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
 
         view.findViewById(R.id.find_group).setOnClickListener(this);
         view.findViewById(R.id.create_group).setOnClickListener(this);
-        mEdit = view.findViewById(R.id.group_id_field);
 
         signInActivity.signInVisibility(View.INVISIBLE);
 
@@ -65,8 +64,23 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
     }
 
     private void findGroup() {
-        groupID = mEdit.getText().toString();
+        try {
 
+            Intent intent = new Intent("com.google.zxing.client.android.SCAN");
+            intent.putExtra("SCAN_MODE", "QR_CODE_MODE"); // "PRODUCT_MODE for bar codes
+
+            startActivityForResult(intent, 0);
+
+        } catch (Exception e) {
+
+            Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
+            Intent marketIntent = new Intent(Intent.ACTION_VIEW,marketUri);
+            startActivity(marketIntent);
+
+        }
+    }
+
+    private void lookForGroup() {
         DocumentReference docRef = db.collection("groups").document(groupID);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
