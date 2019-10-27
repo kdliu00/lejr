@@ -16,4 +16,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/add_entry_frame"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/entry_list"
+        app:layout_constraintEnd_toEndOf="@+id/entry_list"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/entry_list"
+        app:layout_constraintVertical_bias="0.512">
+
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
