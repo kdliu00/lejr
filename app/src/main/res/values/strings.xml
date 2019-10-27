@@ -5,4 +5,7 @@
     <string name="find_group">Find Group</string>
     <string name="create_group">Create Group</string>
     <string name="group_id">Group ID</string>
+    <string name="name_amount">Name - Amount</string>
+    <string name="_10_24_2019">10/24/2019</string>
+    <string name="description">Description</string>
 </resources>
