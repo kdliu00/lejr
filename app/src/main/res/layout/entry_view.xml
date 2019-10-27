@@ -8,6 +8,12 @@
     android:orientation="vertical">
 
     <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:srcCompat="@android:color/background_light" />
+
+    <ImageView
         android:id="@+id/entry_image_view"
         android:layout_width="315dp"
         android:layout_height="316dp"
