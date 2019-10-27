@@ -91,7 +91,7 @@ public class AddEntryFragment extends Fragment implements View.OnClickListener {
         } else if (view.getId() == R.id.confirm_image) {
             Log.d(TAG, "Creating options frame");
             getActivity().getSupportFragmentManager().beginTransaction()
-                    .add(R.id.add_entry_frame, new CreateEntryFragment(receiptAmount, receiptUri, receiptTitle))
+                    .add(R.id.fragment_frame, new CreateEntryFragment(receiptAmount, receiptUri, receiptTitle))
                     .commit();
         }
     }

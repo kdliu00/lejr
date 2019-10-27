@@ -10,7 +10,7 @@
 
     <FrameLayout
 
-        android:id="@+id/group_view_frame"
+        android:id="@+id/fragment_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

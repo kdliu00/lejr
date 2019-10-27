@@ -137,7 +137,7 @@ public class SignInActivity extends FragmentActivity implements View.OnClickList
 
     private void goToGroupFragment() {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.group_view_frame, new GroupFragment(this))
+                .add(R.id.fragment_frame, new GroupFragment(this))
                 .commit();
     }
 

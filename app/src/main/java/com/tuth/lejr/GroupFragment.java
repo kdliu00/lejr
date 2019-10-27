@@ -89,7 +89,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
 
     private void updateGroup(Object _members, Object _userMap) {
         HashMap<String, Object> members = (HashMap<String, Object>) _members;
-        members.put(mUser.getUid(), 0f);
+        members.put(mUser.getUid(), 0.0);
 
         final HashMap<String, String> userMap = (HashMap<String, String>) _userMap;
         userMap.put(mUser.getUid(), mUser.getDisplayName());
@@ -139,7 +139,7 @@ public class GroupFragment extends Fragment implements View.OnClickListener {
     private void createGroup() {
         Map<String, Object> group = new HashMap<>();
         Map<String, Object> members = new HashMap<>();
-        members.put(mUser.getUid(), 0f);
+        members.put(mUser.getUid(), 0.0);
         group.put("members", members);
         Map<String, String> userMap = new HashMap<>();
         userMap.put(mUser.getUid(), mUser.getDisplayName());

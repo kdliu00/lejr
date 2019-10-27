@@ -11,4 +11,5 @@
     <string name="group_details">Group Details</string>
     <string name="current_balance_16_32">Current Balance:</string>
     <string name="_433_25">-$433.25</string>
+    <string name="group_qr_code">Group QR Code</string>
 </resources>

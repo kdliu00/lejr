@@ -45,8 +45,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         updateBalance();
 
@@ -75,14 +73,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void viewGroupDetails() {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.group_view_frame, new GroupDetailsFragment(groupID))
+                .add(R.id.fragment_frame, new GroupDetailsFragment(groupID))
                 .commit();
         findViewById(R.id.fab).setVisibility(View.INVISIBLE);
     }
 
     private void addEntry() {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.add_entry_frame, new AddEntryFragment())
+                .add(R.id.fragment_frame, new AddEntryFragment())
                 .commit();
         findViewById(R.id.fab).setVisibility(View.INVISIBLE);
     }
@@ -153,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onEntryItemClick(Entry entryItem) {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.add_entry_frame, new EntryFragment(entryItem))
+                        .add(R.id.fragment_frame, new EntryFragment(entryItem))
                         .commit();
                 findViewById(R.id.fab).setVisibility(View.INVISIBLE);
             }
@@ -175,11 +173,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         int stackCount = getSupportFragmentManager().getBackStackEntryCount();
-        if (stackCount > 0) {
-            getSupportFragmentManager().popBackStack();
-        } else {
-            super.onBackPressed();
-        }
+//        if (stackCount > 0) {
+//            getSupportFragmentManager().popBackStack();
+//        } else {
+//            super.onBackPressed();
+//        }
         FloatingActionButton fab = findViewById(R.id.fab);
         if (fab.getVisibility() == View.INVISIBLE && stackCount == 0) {
             findViewById(R.id.fab).setVisibility(View.VISIBLE);
