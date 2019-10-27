@@ -2,8 +2,10 @@ package com.tuth.lejr;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class Entry {
     public static HashMap<String, String> userMap;
@@ -15,8 +17,6 @@ public class Entry {
     private HashMap<String, Object> shares;
 
     private Double amount;
-
-    private static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public Entry() {
 
@@ -52,6 +52,12 @@ public class Entry {
 
     public Date getDate() {
         return date;
+    }
+
+    public String getDateString() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+        String dateString = simpleDateFormat.format(getDate());
+        return dateString;
     }
 
     public HashMap<String, Object> getShares() {

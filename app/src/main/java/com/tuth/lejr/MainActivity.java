@@ -95,10 +95,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setQuery(query, Entry.class)
                 .build();
 
-        entryAdapter = new EntryAdapter(options);
+        entryAdapter = new EntryAdapter(options, new EntryAdapter.OnEntryItemClickListener() {
+            @Override
+            public void onEntryItemClick(Entry entryItem) {
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.add_entry_frame, new EntryFragment(entryItem))
+                        .commit();
+                findViewById(R.id.fab).setVisibility(View.INVISIBLE);
+            }
+        });
 
         recyclerView = findViewById(R.id.entry_recycler);
-        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(entryAdapter);
 
@@ -109,5 +116,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStop() {
         super.onStop();
         entryAdapter.stopListening();
+    }
+
+    @Override
+    public void onBackPressed() {
+        int stackCount = getSupportFragmentManager().getBackStackEntryCount();
+        if (stackCount > 0) {
+            getSupportFragmentManager().popBackStack();
+        }
+        FloatingActionButton fab = findViewById(R.id.fab);
+        if (fab.getVisibility() == View.INVISIBLE && stackCount == 0) {
+            findViewById(R.id.fab).setVisibility(View.VISIBLE);
+        }
+        super.onBackPressed();
     }
 }

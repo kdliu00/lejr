@@ -11,13 +11,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 public class EntryAdapter extends FirestoreRecyclerAdapter<Entry, EntryAdapter.EntryHolder> {
 
-    public EntryAdapter(@NonNull FirestoreRecyclerOptions<Entry> options) {
+    public interface OnEntryItemClickListener {
+        void onEntryItemClick(Entry entryItem);
+    }
+
+    private final OnEntryItemClickListener clickListener;
+
+    public EntryAdapter(@NonNull FirestoreRecyclerOptions<Entry> options, OnEntryItemClickListener _clickListener) {
         super(options);
+        clickListener = _clickListener;
     }
 
     @Override
@@ -25,9 +29,9 @@ public class EntryAdapter extends FirestoreRecyclerAdapter<Entry, EntryAdapter.E
         holder.textViewTitle.setText(model.getTitle());
         holder.textViewDescription.setText(model.getDescription());
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
-        String dateString = simpleDateFormat.format(model.getDate());
-        holder.textViewDate.setText(dateString);
+        holder.textViewDate.setText(model.getDateString());
+
+        holder.bind(model, clickListener);
     }
 
     @NonNull
@@ -47,6 +51,14 @@ public class EntryAdapter extends FirestoreRecyclerAdapter<Entry, EntryAdapter.E
             textViewTitle = itemView.findViewById(R.id.text_view_title);
             textViewDescription = itemView.findViewById(R.id.text_view_description);
             textViewDate = itemView.findViewById(R.id.text_view_date);
+        }
+
+        public void bind(final Entry entry, final OnEntryItemClickListener listener) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    listener.onEntryItemClick(entry);
+                }
+            });
         }
 
     }
