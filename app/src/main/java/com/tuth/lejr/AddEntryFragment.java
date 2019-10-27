@@ -48,9 +48,11 @@ public class AddEntryFragment extends Fragment implements View.OnClickListener {
     private Uri receiptUri;
 
     public String groupID;
+    private MainActivity mainActivity;
 
-    public AddEntryFragment(String gid) {
+    public AddEntryFragment(MainActivity mA, String gid) {
         groupID = gid;
+        mainActivity = mA;
     }
 
     @Override
@@ -97,7 +99,7 @@ public class AddEntryFragment extends Fragment implements View.OnClickListener {
         } else if (view.getId() == R.id.confirm_image) {
             Log.d(TAG, "Creating options frame");
             getActivity().getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_frame, new CreateEntryFragment(groupID, receiptAmount, receiptUri, receiptTitle))
+                    .add(R.id.fragment_frame, new CreateEntryFragment(mainActivity, groupID, receiptAmount, receiptUri, receiptTitle))
                     .addToBackStack("create_entry_fragment")
                     .commit();
         }

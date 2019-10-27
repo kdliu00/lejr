@@ -55,23 +55,19 @@ public class CreateEntryFragment extends Fragment implements View.OnClickListene
     private Uri receiptImage;
     private String receiptDesc;
 
-    private List<Member> mModelList;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
 
     public HashMap<String, Boolean> isSelected;
+    private MainActivity mainActivity;
 
-
-    public interface selectListener {
-        public void onOkay(ArrayList<Integer> arrayList);
-        public void onCancel();
-    }
-
-    public CreateEntryFragment(double amount, Uri image, String desc) {
+    public CreateEntryFragment(MainActivity mA, String gid, double amount, Uri image, String desc) {
         payerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         receiptAmount = amount;
         receiptImage = image;
         receiptDesc = desc;
+        groupID = gid;
+        mainActivity = mA;
     }
 
     @Override
@@ -104,6 +100,7 @@ public class CreateEntryFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.ce_submit) {
+            view.findViewById(R.id.ce_submit).setVisibility(View.INVISIBLE);
             paymentDate = new Date();
             // Upload image
             final StorageReference imageRef = FirebaseStorage.getInstance().getReference()
@@ -175,6 +172,8 @@ public class CreateEntryFragment extends Fragment implements View.OnClickListene
                             balanceMap.put(payerID, balanceMap.getOrDefault(payerID, 0.0).doubleValue() + receiptAmount);
                             // Resubmit balances
                             docRef.update("members", balanceMap);
+                            mainActivity.returnFromCreateEntry();
+
                         } else {
                             Log.d(TAG, "Failed");
                         }
@@ -186,27 +185,27 @@ public class CreateEntryFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private void setUpRecyclerView() {
-        FirebaseFirestore.getInstance()
-                .collection("groups")
-                .document(groupID)
-                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    HashMap<String, Object> balanceMap = (HashMap<String, Object>) document.get("members");
-                    if (document.exists() && balanceMap != null) {
-                        Log.d(TAG, "Updating balances");
-
-                    } else {
-                        Log.d(TAG, "Failed");
-                    }
-                } else {
-                    Log.d(TAG, "Failed", task.getException());
-                }
-            }
-        });
+//    private void setUpRecyclerView() {
+//        FirebaseFirestore.getInstance()
+//                .collection("groups")
+//                .document(groupID)
+//                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//                    HashMap<String, Object> balanceMap = (HashMap<String, Object>) document.get("members");
+//                    if (document.exists() && balanceMap != null) {
+//                        Log.d(TAG, "Updating balances");
+//
+//                    } else {
+//                        Log.d(TAG, "Failed");
+//                    }
+//                } else {
+//                    Log.d(TAG, "Failed", task.getException());
+//                }
+//            }
+//        });
 //        Query query = colRef.orderBy("date", Query.Direction.DESCENDING);
 //
 //        FirestoreRecyclerOptions<Entry> options = new FirestoreRecyclerOptions.Builder<Entry>()
@@ -228,5 +227,5 @@ public class CreateEntryFragment extends Fragment implements View.OnClickListene
 //        rv.setAdapter(entryAdapter);
 //
 //        entryAdapter.startListening();
-    }
+//    }
 }

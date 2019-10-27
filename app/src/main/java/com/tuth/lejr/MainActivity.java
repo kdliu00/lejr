@@ -77,16 +77,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .addToBackStack("group_details_fragment")
                 .commit();
         findViewById(R.id.fab).setVisibility(View.INVISIBLE);
-        findViewById(R.id.entry_recycler).setVisibility(View.INVISIBLE);
+    }
+
+    public void returnFromCreateEntry() {
+        onBackPressed();
+        onBackPressed();
     }
 
     private void addEntry() {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_frame, new AddEntryFragment(groupID))
+                .add(R.id.fragment_frame, new AddEntryFragment(this, groupID))
                 .addToBackStack("add_entry_fragment")
                 .commit();
         findViewById(R.id.fab).setVisibility(View.INVISIBLE);
-        findViewById(R.id.entry_recycler).setVisibility(View.INVISIBLE);
     }
 
     private void updateQuery() {
@@ -161,7 +164,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .addToBackStack("entry_fragment")
                         .commit();
                 findViewById(R.id.fab).setVisibility(View.INVISIBLE);
-                findViewById(R.id.entry_recycler).setVisibility(View.INVISIBLE);
             }
         });
 
@@ -188,9 +190,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         stackCount = getSupportFragmentManager().getBackStackEntryCount();
         FloatingActionButton fab = findViewById(R.id.fab);
-        if (fab.getVisibility() == View.INVISIBLE && stackCount == 1) {
+        if (fab.getVisibility() == View.INVISIBLE) {
             findViewById(R.id.fab).setVisibility(View.VISIBLE);
-            findViewById(R.id.entry_recycler).setVisibility(View.VISIBLE);
         }
+        updateQuery();
+        setUpRecyclerView();
     }
 }

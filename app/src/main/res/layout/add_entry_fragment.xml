@@ -7,6 +7,12 @@
     android:layout_height="match_parent"
     tools:context=".AddEntryFragment">
 
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@android:color/background_light" />
+
     <ImageButton
         android:id="@+id/from_camera"
         style="@style/Widget.AppCompat.ImageButton"
