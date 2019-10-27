@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private String TAG = "MainActivity";
 
-    public  String groupID;
+    private String groupID;
     private static FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Query query;
     private RecyclerView recyclerView;
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void addEntry() {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_frame, new AddEntryFragment())
+                .add(R.id.fragment_frame, new AddEntryFragment(groupID))
                 .addToBackStack("add_entry_fragment")
                 .commit();
         findViewById(R.id.fab).setVisibility(View.INVISIBLE);
@@ -116,8 +116,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void updateBalance() {
         TextView balanceText = findViewById(R.id.current_balance_text);
-        String sign = balance < 0 ? "-" : "";
-        String balanceString = String.join("", sign, "$", String.valueOf(balance));
+        String balanceString = String.format("$%.2f", Math.abs(balance));
+        if (balance < 0.004) {
+            balanceString = "-" + balanceString;
+        }
         balanceText.setText(balanceString);
     }
 

@@ -67,8 +67,7 @@ public class Entry {
     }
 
     public String getTitle() {
-        String amountString = String.join("", "$", String.valueOf(getAmount()));
-        return String.join(" - ", getPayerName(), amountString);
+        return String.format("%s - $%.2f", getPayerName(), getAmount());
     }
 
 }
