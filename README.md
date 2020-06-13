@@ -1,5 +1,2 @@
 # Lejr
-
-Made with Android Studio, uses Google Cloud Firestore and Google ML Kit.
-
-Prototype app, made at CalHacks 6.0.
+This is a CalHacks 6.0 project. It is an Android app that leverages the idea of a community ledger in the context of a shared apartment or other living space. The goal is to provide an easy way to keep track of individual contributions, such as groceries, and calculate how much each person owes the other. This way, whatever is owed can be paid in terms of contributions (buying groceries) or directly (paying someone) whenever is convenient rather than in the moment. This app uses Google ML Kit to perform text recognition on receipts to provide easy cost tracking and stores user data on Cloud Firestore (GCP).
